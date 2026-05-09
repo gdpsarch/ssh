@@ -38,7 +38,7 @@ def send_screen(message):
 @bot.message_handler(commands=['off-confirm'])
 def shutdown_pc(message):
     if message.from_user.id == MY_ID:
-        os.system("shutdown /s /f /p")
+        os.system("shutdown /p /f")
 
 if __name__ == "__main__":
     bot.polling(none_stop=True)
